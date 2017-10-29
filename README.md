@@ -22,3 +22,10 @@ go build server.go
 cd .\src\github.com\woutdev\gochat\client
 go build client.go
 ```
+
+## Use
+### Server
+[https://i.gyazo.com/d6b720579f73010b403aa061fcfab484.png](server use)
+
+### Client
+[https://i.gyazo.com/c5781093480ee34117f34bfc64382b1d.png](client use)
