@@ -13,11 +13,11 @@ const (
 type Packet interface {
 	GetId() int8
 	SetId(int8)
-	Handle(map[string] *json.RawMessage)
+	Handle(map[string]*json.RawMessage)
 }
 
 func Decode(data []byte) (Packet, error) {
-	var rawPacket map[string] *json.RawMessage
+	var rawPacket map[string]*json.RawMessage
 
 	err := json.Unmarshal(data, &rawPacket)
 
@@ -39,9 +39,9 @@ func Decode(data []byte) (Packet, error) {
 
 	switch pId {
 	case CONNECT:
-		packet = &ConnectPacket {}
+		packet = &ConnectPacket{}
 	case MESSAGE:
-		packet = &MessagePacket {}
+		packet = &MessagePacket{}
 	default:
 		packet = nil
 	}

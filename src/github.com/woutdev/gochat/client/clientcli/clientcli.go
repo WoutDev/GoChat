@@ -1,9 +1,9 @@
 package clientcli
 
 import (
+	"fmt"
 	"github.com/mkideal/cli"
 	"regexp"
-	"fmt"
 	"strings"
 )
 
@@ -11,7 +11,7 @@ type argT struct {
 	cli.Helper
 	ListeningAddress string `cli:"l,address" usage:"address to connect to" dft:"localhost"`
 	ListeningPort    int    `cli:"p,port" usage:"port to connect to" dft:"37632"`
-	Username		 string `cli:"u,username" usage:"username to connect as" dft:"anonymous"`
+	Username         string `cli:"u,username" usage:"username to connect as" dft:"anonymous"`
 }
 
 func (argv *argT) Validate(ctx *cli.Context) error {

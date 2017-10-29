@@ -5,7 +5,7 @@ import (
 )
 
 type MessagePacket struct {
-	Id int8
+	Id  int8
 	Msg string
 }
 
@@ -25,6 +25,6 @@ func (c *MessagePacket) SetId(id int8) {
 	c.Id = id
 }
 
-func (c *MessagePacket) Handle(data map[string] *json.RawMessage) {
+func (c *MessagePacket) Handle(data map[string]*json.RawMessage) {
 	json.Unmarshal(*data["Msg"], &c.Msg)
 }

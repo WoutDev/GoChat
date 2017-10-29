@@ -2,8 +2,8 @@ package main
 
 import (
 	"./clientcli"
-	"fmt"
 	"./io"
+	"fmt"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package protocol
 import "encoding/json"
 
 type ConnectPacket struct {
-	Id int8
+	Id       int8
 	Username string
 }
 

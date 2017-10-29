@@ -1,10 +1,10 @@
 package io
 
 import (
-	"net"
+	"../../protocol"
 	"bufio"
 	"log"
-	"../../protocol"
+	"net"
 )
 
 type Client struct {
@@ -23,7 +23,7 @@ func (client *Client) Listen(clients *[]Client) {
 
 		switch p.GetId() {
 		case protocol.CONNECT:
-			username :=	p.(*protocol.ConnectPacket).GetUsername()
+			username := p.(*protocol.ConnectPacket).GetUsername()
 			log.Println(client.Conn.RemoteAddr(), "CONNECT", " >>> ", "New connection with username: ", username)
 		case protocol.MESSAGE:
 			msg := p.(*protocol.MessagePacket).GetMessage()

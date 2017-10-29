@@ -1,22 +1,22 @@
 package io
 
 import (
-	"net"
-	"bufio"
-	"strconv"
-	"os"
-	"fmt"
-	"time"
-	"log"
 	"../../protocol"
+	"bufio"
+	"fmt"
+	"log"
+	"net"
+	"os"
+	"strconv"
+	"time"
 )
 
 func Connect(address string, port int, username string) {
 	portStr := strconv.Itoa(port)
 
-	conn, _ := net.Dial("tcp", address + ":" + portStr)
+	conn, _ := net.Dial("tcp", address+":"+portStr)
 
-	connPacket := protocol.ConnectPacket {
+	connPacket := protocol.ConnectPacket{
 		Id: protocol.CONNECT,
 	}
 
@@ -24,7 +24,7 @@ func Connect(address string, port int, username string) {
 
 	connPacketEncoded, _ := protocol.Encode(&connPacket)
 
-	fmt.Fprintf(conn, string(connPacketEncoded) + "\n")
+	fmt.Fprintf(conn, string(connPacketEncoded)+"\n")
 
 	reader := bufio.NewReader(os.Stdin)
 
@@ -43,7 +43,7 @@ func listenForOutput(conn *net.Conn, reader *bufio.Reader) {
 	for {
 		text, _ := reader.ReadString('\n')
 
-		p := protocol.MessagePacket {
+		p := protocol.MessagePacket{
 			Id: protocol.MESSAGE,
 		}
 
@@ -51,7 +51,7 @@ func listenForOutput(conn *net.Conn, reader *bufio.Reader) {
 
 		encodedPacket, _ := protocol.Encode(&p)
 
-		fmt.Fprintf(*conn, string(encodedPacket) + "\n")
+		fmt.Fprintf(*conn, string(encodedPacket)+"\n")
 	}
 }
 func listenForInput(conn *net.Conn) {

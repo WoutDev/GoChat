@@ -1,9 +1,9 @@
 package servercli
 
 import (
+	"fmt"
 	"github.com/mkideal/cli"
 	"regexp"
-	"fmt"
 	"strings"
 )
 
