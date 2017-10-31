@@ -3,7 +3,8 @@ package main
 import (
 	"./clientcli"
 	"./io"
-	"fmt"
+	"log"
+	"strconv"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Attempting to connect to", address, ":", port, "as", username)
+	log.Println("Attempting to connect to", address+":"+strconv.Itoa(port), "as", username)
 
 	io.Connect(address, port, username)
 }

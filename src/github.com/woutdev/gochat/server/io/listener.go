@@ -1,7 +1,7 @@
 package io
 
 import (
-	"fmt"
+	"log"
 	"net"
 	"strconv"
 )
@@ -11,9 +11,13 @@ var clients []Client
 func ListenForConnectionsForever(address string, port int) {
 	portStr := strconv.Itoa(port)
 
-	ln, _ := net.Listen("tcp", address+":"+portStr)
+	ln, err := net.Listen("tcp", address+":"+portStr)
 
-	fmt.Println("Now listening on", ln.Addr())
+	if err != nil {
+		log.Fatal("Error listening: ", err)
+	}
+
+	log.Println("Now listening!")
 
 	for {
 		conn, _ := ln.Accept()

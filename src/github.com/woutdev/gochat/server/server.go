@@ -3,7 +3,8 @@ package main
 import (
 	"./io"
 	"./servercli"
-	"fmt"
+	"log"
+	"strconv"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Attempting to listen...")
+	log.Println("Attempting to listen on", address+":"+strconv.Itoa(port))
 
 	io.ListenForConnectionsForever(address, port)
 }

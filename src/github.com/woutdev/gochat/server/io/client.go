@@ -24,10 +24,13 @@ func (client *Client) Listen(clients *[]Client) {
 		switch p.GetId() {
 		case protocol.CONNECT:
 			username := p.(*protocol.ConnectPacket).GetUsername()
-			log.Println(client.Conn.RemoteAddr(), "CONNECT", " >>> ", "New connection with username: ", username)
+			log.Println(client.Conn.RemoteAddr(), "CONNECT", "\t", ">>>", "\t", "New connection with username:", username)
 		case protocol.MESSAGE:
-			msg := p.(*protocol.MessagePacket).GetMessage()
-			log.Println(client.Conn.RemoteAddr(), "MSG", " >>> ", "Incoming message: ", msg)
+			packet := p.(*protocol.MessagePacket)
+			log.Println(client.Conn.RemoteAddr(), "MSG", "\t", ">>>", "\t", "["+packet.GetUsername()+"]", packet.GetMessage())
+		case protocol.DISCONNECT:
+			packet := p.(*protocol.DisconnectPacket)
+			log.Println(client.Conn.RemoteAddr(), "DISCONNECT", "\t", ">>>", "\t", "Goodbye", packet.GetUsername())
 		default:
 			log.Println(client.Conn.RemoteAddr(), p.GetId())
 		}

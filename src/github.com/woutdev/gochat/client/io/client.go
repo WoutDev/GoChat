@@ -8,17 +8,27 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
-func Connect(address string, port int, username string) {
+var username string
+var connected bool = true
+
+func Connect(address string, port int, user string) {
 	portStr := strconv.Itoa(port)
 
-	conn, _ := net.Dial("tcp", address+":"+portStr)
+	conn, err := net.Dial("tcp", address+":"+portStr)
+
+	if err != nil {
+		log.Fatal("Error: failed to connect: ", err.Error())
+	}
 
 	connPacket := protocol.ConnectPacket{
 		Id: protocol.CONNECT,
 	}
+
+	username = user
 
 	connPacket.SetUsername(username)
 
@@ -28,7 +38,7 @@ func Connect(address string, port int, username string) {
 
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Println("Connected! Type anything and press return to send.")
+	log.Println("Connected! Type anything and press return to send. Type /quit to quit")
 
 	go listenForInput(&conn)
 
@@ -40,14 +50,33 @@ func Connect(address string, port int, username string) {
 }
 
 func listenForOutput(conn *net.Conn, reader *bufio.Reader) {
-	for {
+	for connected {
 		text, _ := reader.ReadString('\n')
+
+		if strings.TrimRight(text, "\r\n") == "/quit" {
+			p := protocol.DisconnectPacket{
+				Id: protocol.DISCONNECT,
+			}
+
+			p.SetUsername(username)
+
+			encodedPacket, _ := protocol.Encode(&p)
+
+			fmt.Fprint(*conn, string(encodedPacket)+"\n")
+
+			connected = false
+
+			os.Exit(1)
+
+			break
+		}
 
 		p := protocol.MessagePacket{
 			Id: protocol.MESSAGE,
 		}
 
 		p.SetMessage(text)
+		p.SetUsername(username)
 
 		encodedPacket, _ := protocol.Encode(&p)
 
@@ -55,7 +84,7 @@ func listenForOutput(conn *net.Conn, reader *bufio.Reader) {
 	}
 }
 func listenForInput(conn *net.Conn) {
-	for {
+	for connected {
 		message, err := bufio.NewReader(*conn).ReadString('\n')
 
 		if err != nil {

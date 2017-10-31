@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	CONNECT = 0x01
-	MESSAGE = 0x02
+	CONNECT    = 0x01
+	MESSAGE    = 0x02
+	DISCONNECT = 0x03
 )
 
 type Packet interface {
@@ -42,6 +43,8 @@ func Decode(data []byte) (Packet, error) {
 		packet = &ConnectPacket{}
 	case MESSAGE:
 		packet = &MessagePacket{}
+	case DISCONNECT:
+		packet = &DisconnectPacket{}
 	default:
 		packet = nil
 	}
