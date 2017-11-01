@@ -5,6 +5,8 @@ import (
 	"bufio"
 	"log"
 	"net"
+	"fmt"
+	"strings"
 )
 
 type Client struct {
@@ -18,7 +20,8 @@ func (client *Client) Listen(clients *[]Client) {
 		p, err := protocol.Decode([]byte(msg))
 
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return
 		}
 
 		switch p.GetId() {
@@ -27,7 +30,7 @@ func (client *Client) Listen(clients *[]Client) {
 			log.Println(client.Conn.RemoteAddr(), "CONNECT", "\t", ">>>", "\t", "New connection with username:", username)
 		case protocol.MESSAGE:
 			packet := p.(*protocol.MessagePacket)
-			log.Println(client.Conn.RemoteAddr(), "MSG", "\t", ">>>", "\t", "["+packet.GetUsername()+"]", packet.GetMessage())
+			log.Println(client.Conn.RemoteAddr(), "MSG", "\t", ">>>", "\t", "["+packet.GetUsername()+"]", strings.TrimSuffix(packet.GetMessage(), "\n"))
 		case protocol.DISCONNECT:
 			packet := p.(*protocol.DisconnectPacket)
 			log.Println(client.Conn.RemoteAddr(), "DISCONNECT", "\t", ">>>", "\t", "Goodbye", packet.GetUsername())
@@ -35,9 +38,10 @@ func (client *Client) Listen(clients *[]Client) {
 			log.Println(client.Conn.RemoteAddr(), p.GetId())
 		}
 
+		encodedPacket, _ := protocol.Encode(p)
+
 		for _, c := range *clients {
-			encodedPacket, _ := protocol.Encode(p)
-			c.Conn.Write(encodedPacket)
+			fmt.Fprintf(c.Conn, string(encodedPacket) + "\n")
 		}
 	}
 }

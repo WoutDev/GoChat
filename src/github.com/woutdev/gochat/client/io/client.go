@@ -93,6 +93,20 @@ func listenForInput(conn *net.Conn) {
 
 		p, err := protocol.Decode([]byte(message))
 
-		fmt.Println("Server -> Us: ", p.GetId())
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		switch(p.GetId()) {
+		case protocol.CONNECT:
+			packet := p.(*protocol.ConnectPacket)
+			log.Println("CONNECT", "\t", ">>>", "\t", packet.GetUsername() + " connected")
+		case protocol.MESSAGE:
+			packet := p.(*protocol.MessagePacket)
+			log.Println("MSG", "\t", ">>>", "\t", "[" + packet.GetUsername() + "]", strings.TrimSuffix(packet.GetMessage(), "\n"))
+		case protocol.DISCONNECT:
+			packet := p.(*protocol.DisconnectPacket)
+			log.Println("DISCONNECT", "\t", ">>>", "\t", packet.GetUsername() + " disconnected. Goodbye :(")
+		}
 	}
 }
